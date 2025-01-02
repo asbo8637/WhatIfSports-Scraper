@@ -3,6 +3,7 @@ import time
 
 driver = driver()
 driver.login()
-driver.get_teams()
+test=driver.get_teams()
+print(test)
 
 time.sleep(6000)

@@ -55,7 +55,20 @@ class driver:
         #This is the query for the players. From cookies will get the team. 
         self.chrome.get('https://www.whatifsports.com/hd/Recruiting/TeamRecruitingPool.aspx?filterView=1&decisionStatus=2&view=1&includeHS=True&includeJUCO=True&includeTransfers=True&includeInternational=True&projDivision=4&ratingFilter1=1&ratingFilter2=1&ratingFilter3=1&ratingFilter4=1&primarySortField=1&primarySortDirection=1&page=1&search=True')
 
-        time.sleep(10)
+        self.wait.until(EC.visibility_of_element_located((By.ID ,'recruiting_teamrecruitingpool')))
+        players = self.chrome.find_elements(By.XPATH, '//*[@title="Open Recruit Profile"]')
+        playerPages=[]
+        for player in players:
+            if(player.text!=""):
+                print("Found player: ", player.text)
+                playerPages.append(player.get_attribute('href'))
+        
+        return playerPages
+            
+
+        
+
+
 
     def get_teams(self):
         '''
@@ -70,9 +83,12 @@ class driver:
                 link = team.find_element(By.TAG_NAME, 'a')
                 hrefs.append(link.get_attribute('href'))
         
+        playerPages=[]
         for href in hrefs:
             print(f"Link to click: {href}")
-            self.get_player_ids(href)
+            playerPages.extend(self.get_player_ids(href))
+        
+        return playerPages
                 
 
 
