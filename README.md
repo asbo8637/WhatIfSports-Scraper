@@ -7,4 +7,5 @@ Requirements:
     pip install selenium
     https://googlechromelabs.github.io/chrome-for-testing/#stable
     pip install --upgrade undetected-chromedriver selenium
+    pip install python-dotenv
 
