@@ -7,6 +7,8 @@ import os
 from dotenv import load_dotenv
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from bs4 import BeautifulSoup
+import requests
 
 script_directory = os.path.dirname(os.path.abspath(__file__))
 print(f"Script directory: {script_directory}")
@@ -57,17 +59,17 @@ class driver:
 
         self.wait.until(EC.visibility_of_element_located((By.ID ,'recruiting_teamrecruitingpool')))
         players = self.chrome.find_elements(By.XPATH, '//*[@title="Open Recruit Profile"]')
+        miles=self.chrome.find_elements(By.CLASS_NAME, "right.miles")
+        miles = [item for item in miles if item.text.lower() != "miles"]
         playerPages=[]
-        for player in players:
-            if(player.text!=""):
+        for player, mile in zip(players, miles):
+            if player.text != "":
                 print("Found player: ", player.text)
-                playerPages.append(player.get_attribute('href'))
-        
+                name=player.text.split()
+                url=player.get_attribute('href').replace("Default", "ConsideringList")
+                playerPages.append([name[0], name[1], url, mile.text])
+
         return playerPages
-            
-
-        
-
 
 
     def get_teams(self):
@@ -89,6 +91,47 @@ class driver:
             playerPages.extend(self.get_player_ids(href))
         
         return playerPages
+        
+
+    def get_consider(self, url):
+        # Fetch the page content
+        response = requests.get(url)
+        soup = BeautifulSoup(response.content, 'html.parser')
+
+        # Find the table with the specified class
+        table = soup.find('table', {'class': 'standard.history.sortable'})
+
+        # List to store the extracted data
+        data = []
+
+        # Loop through the rows (both odd and even)
+        for row in table.find_all('tr', class_=['odd', 'even']):
+            # Extract all the <td> cells in the row
+            columns = row.find_all('td')
+            
+            # If there are enough columns (to avoid IndexErrors)
+            if len(columns) >= 6:
+                team = columns[0].text.strip()
+                coach = columns[1].text.strip()
+                division = columns[2].text.strip()
+                prestige = columns[3].text.strip()
+                int_level = columns[4].text.strip()
+                scholarship_offer = columns[5].text.strip()
                 
+                # Store the extracted data
+                data.append({
+                    'Team': team,
+                    'Coach': coach,
+                    'Division': division,
+                    'Prestige': prestige,
+                    'Int Level': int_level,
+                    'Scholarship Offer?': scholarship_offer
+                })
+
+        # Print the extracted data
+        for entry in data:
+            print(entry)
+
+                    
 
 
