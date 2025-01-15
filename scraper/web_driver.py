@@ -20,16 +20,12 @@ class driver:
     Driver class. Allows for simple manipluations of the website. 
     '''
     def __init__(self):
-        # Set up undetected-chromedriver. Bypassess bot security. 
+        # Set up undetected-chromedriver. Bypasses bot security. 
         options = uc.ChromeOptions()
         options.add_argument('--no-sandbox')
         options.add_argument('--disable-dev-shm-usage')
         options.add_argument('--disable-blink-features=AutomationControlled')  # Disables bot detection features
         options.add_argument('--disable-popup-blocking')
-
-
-        options.binary_location = '/mnt/c/Program Files/Google/Chrome/Application/chrome.exe'
-        #options.binary_location = '/usr/bin/google-chrome'
 
         # Start the browser
         self.chrome = uc.Chrome(options=options)

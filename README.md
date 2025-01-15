@@ -5,5 +5,7 @@ Scrapes player data from https://www.whatifsports.com/locker/lockerroom.asp. The
 Requirements: 
     Install: 
     pip install -r requirements.txt
+    https://googlechromelabs.github.io/chrome-for-testing/
+    
 
 Run main.py
