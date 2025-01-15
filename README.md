@@ -4,9 +4,6 @@ Scrapes player data from https://www.whatifsports.com/locker/lockerroom.asp. The
 
 Requirements: 
     Install: 
-    pip install selenium
-    https://googlechromelabs.github.io/chrome-for-testing/#stable
-    pip install --upgrade undetected-chromedriver selenium
-    pip install python-dotenv
+    pip install -r requirements.txt
 
-
+Run main.py
