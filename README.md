@@ -9,3 +9,4 @@ Requirements:
     pip install --upgrade undetected-chromedriver selenium
     pip install python-dotenv
 
+

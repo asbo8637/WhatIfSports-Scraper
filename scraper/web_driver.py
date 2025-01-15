@@ -25,6 +25,7 @@ class driver:
         options.add_argument('--no-sandbox')
         options.add_argument('--disable-dev-shm-usage')
         options.add_argument('--disable-blink-features=AutomationControlled')  # Disables bot detection features
+        options.add_argument('--disable-popup-blocking')
 
         # Start the browser
         self.chrome = uc.Chrome(options=options)
@@ -60,14 +61,39 @@ class driver:
         self.wait.until(EC.visibility_of_element_located((By.ID ,'recruiting_teamrecruitingpool')))
         players = self.chrome.find_elements(By.XPATH, '//*[@title="Open Recruit Profile"]')
         miles=self.chrome.find_elements(By.CLASS_NAME, "right.miles")
+        states = self.chrome.find_elements(By.CLASS_NAME, "sec1")
         miles = [item for item in miles if item.text.lower() != "miles"]
+        physicals = [
+            item for item in self.chrome.find_elements(By.CLASS_NAME, "sec4.borderRight")
+            if item.text in {'A', 'B', 'C', 'D', 'F'}
+        ]
+
+        defenses = [
+            item for item in self.chrome.find_elements(By.CLASS_NAME, "sec2.borderRight")
+            if item.text in {'A', 'B', 'C', 'D', 'F'}
+        ]
+
+        offenses = [
+            item for item in self.chrome.find_elements(By.CLASS_NAME, "sec3.borderRight")
+            if item.text in {'A', 'B', 'C', 'D', 'F'}
+        ]
+
+        states = [
+            item for item in states
+            if item.text.lower() != "state"
+            and len(item.text) == 2
+            and '-' not in item.text
+            and '+' not in item.text
+            and item.text.lower() != "we"
+            and item.text.lower() != "ft"
+        ]
         playerPages=[]
-        for player, mile in zip(players, miles):
+        for player, mile, state, physical, defense, offense in zip(players, miles, states, physicals, defenses, offenses):
             if player.text != "":
                 print("Found player: ", player.text)
                 name=player.text.split()
                 url=player.get_attribute('href').replace("Default", "ConsideringList")
-                playerPages.append([name[0], name[1], url, mile.text])
+                playerPages.append([name[0], name[1], url, mile.text, state.text, physical.text, defense.text, offense.text])
 
         return playerPages
 
@@ -81,7 +107,7 @@ class driver:
         hrefs = []
         for team in teams:
             print(team.text)
-            if(team.text!=""):
+            if team.text!="":
                 link = team.find_element(By.TAG_NAME, 'a')
                 hrefs.append(link.get_attribute('href'))
         
@@ -94,43 +120,50 @@ class driver:
         
 
     def get_consider(self, url):
-        # Fetch the page content
-        response = requests.get(url)
-        soup = BeautifulSoup(response.content, 'html.parser')
+        self.chrome.get(url)
+        self.wait.until(EC.visibility_of_element_located((By.ID ,'recruitprofile')))
+        # Find the parent element with the class name 'legend'
+        legend = self.chrome.find_element(By.CLASS_NAME, 'legend')
 
-        # Find the table with the specified class
-        table = soup.find('table', {'class': 'standard.history.sortable'})
+        # Find all child elements with the class name 'iconLegend' within the parent 'legend' element
+        icon_legends = legend.find_elements(By.CLASS_NAME, 'iconLegend')
 
-        # List to store the extracted data
-        data = []
+        # Extract the text from the second 'iconLegend' element
+        if len(icon_legends) > 1:
+            overall = icon_legends[1].text
+        else:
+            print("Second iconLegend not found.")
+        values = []
+        tableClasses=["odd", "even", "even.highlight", "odd.highlight"]
+        for tableClass in tableClasses:
+            values.extend(self.chrome.find_elements(By.CLASS_NAME, tableClass))
+        
+        player_considering=[]
+        for value in values:
+            cells=[]
+            cells.extend(value.find_elements(By.TAG_NAME, 'td'))
+            cells = [cell.text for cell in cells]
+            player_considering.append(cells)
 
-        # Loop through the rows (both odd and even)
-        for row in table.find_all('tr', class_=['odd', 'even']):
-            # Extract all the <td> cells in the row
-            columns = row.find_all('td')
-            
-            # If there are enough columns (to avoid IndexErrors)
-            if len(columns) >= 6:
-                team = columns[0].text.strip()
-                coach = columns[1].text.strip()
-                division = columns[2].text.strip()
-                prestige = columns[3].text.strip()
-                int_level = columns[4].text.strip()
-                scholarship_offer = columns[5].text.strip()
-                
-                # Store the extracted data
-                data.append({
-                    'Team': team,
-                    'Coach': coach,
-                    'Division': division,
-                    'Prestige': prestige,
-                    'Int Level': int_level,
-                    'Scholarship Offer?': scholarship_offer
-                })
+        return overall, player_considering
 
-        # Print the extracted data
-        for entry in data:
-            print(entry)
+
+    def close_browser(self):
+        """
+        Properly closes the undetected Chrome browser instance.
+
+        Args:
+            driver: The Chrome WebDriver instance to be closed.
+        """
+        try:
+            if self.chrome:
+                self.chrome.quit()  # Closes all browser windows and ends the WebDriver session
+                print("Browser closed successfully.")
+        except Exception as e:
+            print(f"Error while closing the browser: {e}")
+
+
+
 
                     
 
