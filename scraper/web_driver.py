@@ -50,18 +50,22 @@ class driver:
         input_field.click() 
         actions.send_keys(os.getenv("password")).send_keys(Keys.RETURN).perform()
 
-    def get_player_ids(self, link):
+    def get_player_ids(self, link, get_team):
         '''
         gets the list of player id's to work with. 
         '''
         # Navigate to the provided link in the new tab
-        self.chrome.get(link)
-        self.wait.until(EC.visibility_of_element_located((By.ID, "office_default")))
-        
-        #This is the query for the players. From cookies will get the team. 
-        self.chrome.get('https://www.whatifsports.com/hd/Recruiting/TeamRecruitingPool.aspx?filterView=1&decisionStatus=2&view=1&includeHS=True&includeJUCO=True&includeTransfers=True&includeInternational=True&projDivision=4&ratingFilter1=1&ratingFilter2=1&ratingFilter3=1&ratingFilter4=1&primarySortField=1&primarySortDirection=1&page=1&search=True')
+        if(get_team):
+            self.chrome.get(link)
+            self.wait.until(EC.visibility_of_element_located((By.ID, "office_default")))
+            
+            #This is the query for the players. From cookies will get the team. 
+            self.chrome.get('https://www.whatifsports.com/hd/Recruiting/TeamRecruitingPool.aspx?filterView=1&decisionStatus=2&view=1&includeHS=True&includeJUCO=True&includeTransfers=True&includeInternational=True&projDivision=4&ratingFilter1=1&ratingFilter2=1&ratingFilter3=1&ratingFilter4=1&primarySortField=1&primarySortDirection=1&page=1&search=True')
+            self.wait.until(EC.visibility_of_element_located((By.ID ,'recruiting_teamrecruitingpool')))
+        else: 
+            self.chrome.get(link)
+            self.wait.until(EC.visibility_of_element_located((By.ID ,'recruiting_teamrecruitingpool')))
 
-        self.wait.until(EC.visibility_of_element_located((By.ID ,'recruiting_teamrecruitingpool')))
         players = self.chrome.find_elements(By.XPATH, '//*[@title="Open Recruit Profile"]')
         miles=self.chrome.find_elements(By.CLASS_NAME, "right.miles")
         states = self.chrome.find_elements(By.CLASS_NAME, "sec1")
@@ -97,6 +101,16 @@ class driver:
                 name=player.text.split()
                 url=player.get_attribute('href').replace("Default", "ConsideringList")
                 playerPages.append([name[0], name[1], url, mile.text, state.text, physical.text, defense.text, offense.text])
+        
+        newLink = None
+        try:
+            newLink = self.chrome.find_element(By.CLASS_NAME, "nextpage")
+            if newLink:
+                href_value = newLink.find_element(By.TAG_NAME, "a").get_attribute('href')
+                playerPages.extend(self.get_player_ids(href_value, False))
+        except:
+            print("The element with class 'nextpage' was not found.")
+        
 
         return playerPages
 
@@ -117,7 +131,7 @@ class driver:
         playerPages=[]
         for href in hrefs:
             print(f"Link to click: {href}")
-            playerPages.extend(self.get_player_ids(href))
+            playerPages.extend(self.get_player_ids(href, True))
         
         return playerPages
         
