@@ -28,7 +28,7 @@ class driver:
         options.add_argument('--disable-popup-blocking')
 
         
-        options.binary_location = r"C:\Program Files\Google\Chrome\Application\chrome.exe"
+        options.binary_location = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
 
         # Start the browser
         self.chrome = uc.Chrome(options=options)
