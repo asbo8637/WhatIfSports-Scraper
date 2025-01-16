@@ -15,6 +15,9 @@ class excel_editor:
         self.miles=[]
         self.states=[]
 
+        self.highest_team=[]
+        self.highest_coach=[]
+        self.highest_division=[]
         self.overall_rating=[]
         self.physical=[]
         self.defense=[]
@@ -48,6 +51,10 @@ class excel_editor:
         offered2=0
         offered3=0
         coaches=0
+        highest_coach=""
+        highest_division=4
+        highest_team=""
+
         for stat in stats:
             division=len(stat[2])-1
             if stat[4].find("Low") == -1:
@@ -56,6 +63,8 @@ class excel_editor:
 
             if grade_to_rank.get(stat[3], -4) > grade_to_rank.get(highestPrestige):
                 highestPrestige=stat[3]
+                highest_coach=stat[1]
+                highest_team=stat[0]
 
             if stat[5]=="Yes":
                 offered+=1
@@ -66,9 +75,16 @@ class excel_editor:
                 else:
                     offered3+=1
 
+            if division < highest_division:
+                highest_division=division
+
             if stat[1]!= "Sim AI":
                 coaches+=1
 
+        if highest_division==4:
+            highest_division="NA"
+        
+        self.highest_team.append(highest_team)
         self.above_low_interest.append(above_low)
         self.highest_prestige.append(highestPrestige)
         self.human_coaches.append(coaches)
@@ -76,6 +92,8 @@ class excel_editor:
         self.offers1.append(offered1) 
         self.offers2.append(offered2)
         self.offers3.append(offered3) 
+        self.highest_coach.append(highest_coach)
+        self.highest_division.append(highest_division)
 
 
 
@@ -97,6 +115,9 @@ class excel_editor:
             "Defense" : self.defense,
             "Physical" : self.physical,
             "Teams above low interest": self.above_low_interest,
+            "Highest Considering Team": self.highest_team,
+            "Highest Considering Divsion": self.highest_division,
+            "Highest Considering Coach": self.highest_coach,
             "Highest Prestige": self.highest_prestige,
             "Offers " : self.offers,
             "Offers in D1" : self.offers1,

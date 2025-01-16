@@ -27,7 +27,6 @@ class driver:
         options.add_argument('--disable-blink-features=AutomationControlled')  # Disables bot detection features
         options.add_argument('--disable-popup-blocking')
 
-        
         options.binary_location = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
 
         # Start the browser
@@ -131,6 +130,7 @@ class driver:
         playerPages=[]
         for href in hrefs:
             print(f"Link to click: {href}")
+            playerPages.append(["FAKE", "FAKE", href, 0, 0, 0, 0, 0])
             playerPages.extend(self.get_player_ids(href, True))
         
         return playerPages
@@ -145,9 +145,12 @@ class driver:
         # Find all child elements with the class name 'iconLegend' within the parent 'legend' element
         icon_legends = legend.find_elements(By.CLASS_NAME, 'iconLegend')
 
-        # Extract the text from the second 'iconLegend' element
+        # Extract the text from the second 'iconLegend' element\
+        overall = "na"
         if len(icon_legends) > 1:
             overall = icon_legends[1].text
+            if not "Ranked Overall" in overall:
+                overall = "na"
         else:
             print("Second iconLegend not found.")
         values = []
@@ -164,6 +167,9 @@ class driver:
 
         return overall, player_considering
 
+    def go_to_team(self, url):
+        self.chrome.get(url)
+        self.wait.until(EC.visibility_of_element_located((By.CLASS_NAME, "teampage.mainPage2Col.mainPage")))
 
     def close_browser(self):
         """
@@ -178,6 +184,7 @@ class driver:
                 print("Browser closed successfully.")
         except Exception as e:
             print(f"Error while closing the browser: {e}")
+    
 
 
 
