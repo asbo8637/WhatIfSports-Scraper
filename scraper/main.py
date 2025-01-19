@@ -14,7 +14,7 @@ for player in test:
         driver.go_to_team(player[2])
     else:
         overall, results = driver.get_consider(player[2])
-        excel.add_player(player[0], player[1], player[3], player[4], player[5], player[6], player[7], overall, results)
+        excel.add_player(player[0], player[1], player[3], player[4], player[5], player[6], player[7], player[8], overall, results)
 
 excel.print_players()
 excel.create_sheet()

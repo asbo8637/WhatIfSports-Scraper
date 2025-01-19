@@ -68,6 +68,7 @@ class driver:
         players = self.chrome.find_elements(By.XPATH, '//*[@title="Open Recruit Profile"]')
         miles=self.chrome.find_elements(By.CLASS_NAME, "right.miles")
         states = self.chrome.find_elements(By.CLASS_NAME, "sec1")
+        positions = self.chrome.find_elements(By.CSS_SELECTOR, ".borderRight:not([class*=' '])")
         miles = [item for item in miles if item.text.lower() != "miles"]
         physicals = [
             item for item in self.chrome.find_elements(By.CLASS_NAME, "sec4.borderRight")
@@ -94,12 +95,12 @@ class driver:
             and item.text.lower() != "ft"
         ]
         playerPages=[]
-        for player, mile, state, physical, defense, offense in zip(players, miles, states, physicals, defenses, offenses):
+        for player, mile, state, physical, defense, offense, position in zip(players, miles, states, physicals, defenses, offenses, positions):
             if player.text != "":
                 print("Found player: ", player.text)
                 name=player.text.split()
                 url=player.get_attribute('href').replace("Default", "ConsideringList")
-                playerPages.append([name[0], name[1], url, mile.text, state.text, physical.text, defense.text, offense.text])
+                playerPages.append([name[0], name[1], url, mile.text, state.text, physical.text, defense.text, offense.text, position.text])
         
         newLink = None
         try:

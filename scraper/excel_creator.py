@@ -14,6 +14,7 @@ class excel_editor:
         self.last_names=[]
         self.miles=[]
         self.states=[]
+        self.positions=[]
 
         self.highest_team=[]
         self.highest_coach=[]
@@ -30,7 +31,7 @@ class excel_editor:
         self.offers2=[]
         self.offers3=[]
         
-    def add_player(self, first_name, last_name, miles, state, physical, defense, offense, overall, stats):
+    def add_player(self, first_name, last_name, miles, state, physical, defense, offense, position, overall, stats):
         self.first_names.append(first_name)    
         self.last_names.append(last_name)
         self.miles.append(miles)
@@ -39,6 +40,7 @@ class excel_editor:
         self.defense.append(defense)
         self.offense.append(offense)
         self.overall_rating.append(overall)
+        self.positions.append(position)
         self.read_considering(stats)
 
         
@@ -110,6 +112,7 @@ class excel_editor:
             "Last Name": self.last_names,
             "Miles": self.miles,
             "State": self.states,
+            "Position": self.positions,
             "Overall" : self.overall_rating,
             "Offense" : self.offense,
             "Defense" : self.defense,
