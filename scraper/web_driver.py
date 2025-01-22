@@ -27,7 +27,7 @@ class driver:
         options.add_argument('--disable-blink-features=AutomationControlled')  # Disables bot detection features
         options.add_argument('--disable-popup-blocking')
 
-        #options.binary_location = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
+        options.binary_location = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
 
         # Start the browser
         self.chrome = uc.Chrome(options=options)
