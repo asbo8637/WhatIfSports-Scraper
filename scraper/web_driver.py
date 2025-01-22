@@ -48,6 +48,8 @@ class driver:
         input_field = self.chrome.find_element(By.ID, "password") 
         input_field.click() 
         actions.send_keys(os.getenv("password")).send_keys(Keys.RETURN).perform()
+        time.sleep(1)
+        self.chrome.get('https://www.whatifsports.com/locker/lockerroom.asp')
 
     def get_player_ids(self, link, get_team):
         '''
