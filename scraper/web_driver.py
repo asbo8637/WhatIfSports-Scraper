@@ -115,7 +115,7 @@ class driver:
         return playerPages
 
 
-    def get_teams(self):
+    def get_teams(self, teams_to_get):
         '''
         Finds each team and calls get_player 
         '''
@@ -124,7 +124,7 @@ class driver:
         hrefs = []
         for team in teams:
             print(team.text)
-            if team.text!="":
+            if team.text!="" and team.text in teams_to_get:
                 link = team.find_element(By.TAG_NAME, 'a')
                 hrefs.append(link.get_attribute('href'))
         

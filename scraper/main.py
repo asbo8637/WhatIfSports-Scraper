@@ -1,11 +1,17 @@
 from web_driver import driver
 from excel_creator import excel_editor
 import time
+import sys
+
+teams=[]
+for x in range(1, len(sys.argv)):
+    teams.append(sys.argv[x])
+    print(sys.argv[x])
 
 driver = driver()
 excel = excel_editor()
 driver.login()
-test=driver.get_teams()
+test=driver.get_teams(teams)
 print(test)
 
 results=[]
