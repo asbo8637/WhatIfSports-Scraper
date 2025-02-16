@@ -30,6 +30,10 @@ class excel_editor:
         self.offers1=[]
         self.offers2=[]
         self.offers3=[]
+
+        self.humans_considering_1=[]
+        self.humans_considering_2=[]
+        self.humans_considering_3=[]
         
     def add_player(self, first_name, last_name, miles, state, physical, defense, offense, position, overall, stats):
         self.first_names.append(first_name)    
@@ -57,6 +61,10 @@ class excel_editor:
         highest_division=4
         highest_team=""
 
+        coaches_1=0
+        coaches_2=0
+        coaches_3=0
+
         for stat in stats:
             division=len(stat[2])-1
             if stat[4].find("Low") == -1:
@@ -82,10 +90,18 @@ class excel_editor:
 
             if stat[1]!= "Sim AI":
                 coaches+=1
+                if division == 1:
+                    coaches_1+=1
+                elif division == 2:
+                    coaches_2+=1
+                elif division == 3:
+                    coaches_2+=1
+
 
         if highest_division==4:
             highest_division="NA"
         
+
         self.highest_team.append(highest_team)
         self.above_low_interest.append(above_low)
         self.highest_prestige.append(highestPrestige)
@@ -96,6 +112,9 @@ class excel_editor:
         self.offers3.append(offered3) 
         self.highest_coach.append(highest_coach)
         self.highest_division.append(highest_division)
+        self.humans_considering_1.append(coaches_1)
+        self.humans_considering_2.append(coaches_2)
+        self.humans_considering_3.append(coaches_3)
 
 
 
@@ -126,7 +145,10 @@ class excel_editor:
             "Offers in D1" : self.offers1,
             "Offers in D2" : self.offers2,
             "Offers in D3" : self.offers3,
-            "Human Coaches": self.human_coaches
+            "Human Coaches": self.human_coaches,
+            "Human Coaches D1": self.humans_considering_1,
+            "Human Coaches D2": self.humans_considering_2,
+            "Human Coaches D3": self.humans_considering_3,
         }
         # Base filename
         base_filename = "hoops_stats"
