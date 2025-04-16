@@ -27,7 +27,7 @@ class driver:
         options.add_argument('--disable-blink-features=AutomationControlled')  # Disables bot detection features
         options.add_argument('--disable-popup-blocking')
 
-        options.binary_location = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
+        # options.binary_location = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
 
         # Start the browser
         self.chrome = uc.Chrome(options=options)
@@ -39,13 +39,13 @@ class driver:
         '''
         self.chrome.get('https://www.whatifsports.com/locker/lockerroom.asp')
 
-        input_field = self.wait.until(EC.visibility_of_element_located((By.ID, "username")))
+        input_field = self.wait.until(EC.visibility_of_element_located((By.ID, "identifier-field")))
         input_field.click() 
 
         actions = ActionChains(self.chrome)
-        actions.send_keys(os.getenv("username")).perform()
+        actions.send_keys(os.getenv("username")).send_keys(Keys.RETURN).perform()
         
-        input_field = self.chrome.find_element(By.ID, "password") 
+        input_field = self.wait.until(EC.visibility_of_element_located((By.ID, "password-field")))
         input_field.click() 
         actions.send_keys(os.getenv("password")).send_keys(Keys.RETURN).perform()
         time.sleep(5)
