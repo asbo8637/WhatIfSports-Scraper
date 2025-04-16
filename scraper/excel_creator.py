@@ -34,8 +34,10 @@ class excel_editor:
         self.humans_considering_1=[]
         self.humans_considering_2=[]
         self.humans_considering_3=[]
+
+        self.humans_categegory_value=[]
         
-    def add_player(self, first_name, last_name, miles, state, physical, defense, offense, position, overall, stats):
+    def add_player(self, first_name, last_name, miles, state, physical, defense, offense, position, overall, stats, value):
         self.first_names.append(first_name)    
         self.last_names.append(last_name)
         self.miles.append(miles)
@@ -46,6 +48,7 @@ class excel_editor:
         self.overall_rating.append(overall)
         self.positions.append(position)
         self.read_considering(stats)
+        self.humans_categegory_value.append(value)
 
         
 
@@ -65,15 +68,18 @@ class excel_editor:
         coaches_2=0
         coaches_3=0
 
+        highest_coach_div=4
+        highest_coach_prestige=""
+
         for stat in stats:
             division=len(stat[2])-1
             if stat[4].find("Low") == -1:
                 interest=stat[0] + ": " + stat[4]
                 above_low.append(interest)
 
+                
             if grade_to_rank.get(stat[3], -4) > grade_to_rank.get(highestPrestige):
                 highestPrestige=stat[3]
-                highest_coach=stat[1]
                 highest_team=stat[0]
 
             if stat[5]=="Yes":
@@ -96,6 +102,12 @@ class excel_editor:
                     coaches_2+=1
                 elif division == 3:
                     coaches_2+=1
+                
+
+                if division < highest_coach_div and grade_to_rank.get(stat[3], -4) > grade_to_rank.get(highest_coach_prestige):
+                    highest_coach=stat[1]
+                    highest_coach_prestige=stat[3]
+                    highest_coach_div=division
 
 
         if highest_division==4:
@@ -149,6 +161,7 @@ class excel_editor:
             "Human Coaches D1": self.humans_considering_1,
             "Human Coaches D2": self.humans_considering_2,
             "Human Coaches D3": self.humans_considering_3,
+            "Category Value": self.humans_categegory_value,
         }
         # Base filename
         base_filename = "hoops_stats"

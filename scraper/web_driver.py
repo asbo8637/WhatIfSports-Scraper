@@ -27,7 +27,7 @@ class driver:
         options.add_argument('--disable-blink-features=AutomationControlled')  # Disables bot detection features
         options.add_argument('--disable-popup-blocking')
 
-        options.binary_location = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
+        options.binary_location = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" #COMMENT THIS OUT FOR WINDOWS
 
         # Start the browser
         self.chrome = uc.Chrome(options=options)
@@ -120,7 +120,7 @@ class driver:
 
     def get_teams(self, teams_to_get):
         '''
-        Finds each team and calls get_player 
+        Finds each team and calls get_player_ids
         '''
         self.wait.until(EC.visibility_of_element_located((By.CLASS_NAME, "teamName")))
         teams = self.chrome.find_elements(By.CLASS_NAME, 'teamName')
@@ -169,7 +169,11 @@ class driver:
             cells = [cell.text for cell in cells]
             player_considering.append(cells)
 
-        return overall, player_considering
+        # Get the value of the players checked box
+        checked_radio = self.chrome.find_element(By.XPATH, "//input[@type='radio' and @checked]")
+        checked_value = checked_radio.get_attribute("value")
+
+        return overall, player_considering, checked_value
 
     def go_to_team(self, url):
         self.chrome.get(url)
